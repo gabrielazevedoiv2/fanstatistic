@@ -8,7 +8,18 @@ var results = [
     [3],
     [7],
     [4]
-]
+];
+
+function verticalize(data) {
+    var newData = [];
+    for (var i = 0; i < data.length; i++) {
+        for (var j = 0; j < data[i].length; j++) {
+            if (newData[j] == undefined) newData[j] = [];
+            newData[j].push(data[i][j]);
+        }
+    }
+    return newData;
+}
 
 function calculateMaxes(data) {
     var maxes = [];
@@ -37,7 +48,7 @@ function normalizeData(data, maxes) {
     for (var i = 0; i < data.length; i++) {
         normalizedData[i] = [];
         for (var j = 0; j < data[i].length; j++) {
-            normalizedData[i][j] = parseFloat((data[i][j] / maxes[j]).toFixed(2));
+            normalizedData[i][j] = parseFloat((data[i][j] / maxes[j]));
         }
     }
     return normalizedData;
@@ -54,22 +65,19 @@ function calculateMedian(data) {
     return median;
 }
 
-function calculateDistance(value, median) {
-    return value - median;
+function calculateDistances(variableData, median) {
+    return variableData.map(y => y - median);
 }
 
 function varSignificance(normalizedData, normalizedResults) {
-    console.log(normalizedData);
-    console.log(normalizedResults);
-    console.log(calculateMedian(normalizedData));
-    console.log(calculateMedian(normalizedResults));
+    //console.log(normalizedData);
+    // console.log(normalizedResults);
     var dataMed = calculateMedian(normalizedData);
     var resMed = calculateMedian(normalizedResults);
-    for (var i = 0; i < normalizedData.length; i++) {
-        for (var j = 0; j < normalizedData[i].length; j++) {
-            console.log(calculateDistance(normalizedData[i][j], dataMed[i]));
-        }
-    }
+    // console.log(dataMed)
+    // console.log(verticalize(normalizedData))
+    var xs = verticalize(normalizedData).map((x, index) => calculateDistances(x, dataMed[index]))
+    // console.log(xs);
 }
 
 varSignificance(normalizeData(data, calculateMaxes(data)), normalizeData(results, calculateMaxes(results)));
